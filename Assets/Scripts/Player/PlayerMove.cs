@@ -6,22 +6,42 @@ public class PlayerMove : MonoBehaviour
 {
     /*Velocità con cui Player si muove avanti */
     public float moveSpeed = 5;
-
+    bool IsJumping = false;
     /*Velocità con cui Player si muove a destra e sinistra */
     public float leftRightSpeed = 4;
-
+    Rigidbody rb;
+    public FixedJoystick Joysk;
     public static bool canMove = false;
-
+    public int TIMER;
     void FixedUpdate()
     {
         /*
          * Player si muove avanti costantemente
          */
+        if (IsJumping == true)
+        {
+            TIMER++;
+            if (TIMER <= 20)
+            {
+                transform.Translate(Vector3.up * Time.deltaTime * 9);
+            }
+          
+            if (TIMER >= 20 && TIMER < 40)
+            {
+                transform.Translate(Vector3.down * Time.deltaTime * 9);
+            }
+
+            if(TIMER >= 40)
+            {
+                IsJumping = false;
+                TIMER = 0;
+            }
+        }
         transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World);
 
         if (canMove == true)
-        {
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {                      
+            if (Joysk.Horizontal < 0)
             {
 
                 /*
@@ -32,7 +52,7 @@ public class PlayerMove : MonoBehaviour
                     transform.Translate(Vector3.left * Time.deltaTime * leftRightSpeed);
                 }
             }
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            if (Joysk.Horizontal > 0)
             {
 
                 /*
@@ -46,6 +66,10 @@ public class PlayerMove : MonoBehaviour
             }
         }
     }   
+    public void Jump()
+    {
+        IsJumping = true;
 
+    }
       
 }
